@@ -2,6 +2,7 @@ import {
   ActionFunction,
   Link,
   LoaderFunction,
+  MetaFunction,
   redirect,
   useCatch,
   useLoaderData,
@@ -10,6 +11,23 @@ import {
 import { db } from "~/utils/db.server";
 import { getUserId, requireUserId } from "~/utils/session.server";
 import { JokeData } from "~/utils/types";
+
+export const meta: MetaFunction = ({
+  data,
+}: {
+  data: JokeData | undefined;
+}) => {
+  if (!data) {
+    return {
+      title: "No joke",
+      description: "No joke found",
+    };
+  }
+  return {
+    title: `"${data.joke.name}" joke`,
+    description: `Enjoy the "${data.joke.name}" joke and much more`,
+  };
+};
 
 export const action: ActionFunction = async ({ request, params }) => {
   const form = await request.formData();
