@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from "remix";
+import { LinksFunction, MetaFunction, Scripts } from "remix";
 import { Links, LiveReload, Outlet, useCatch, Meta } from "remix";
 
 import globalStylesUrl from "./styles/global.css";
@@ -55,6 +55,7 @@ const Document = ({
       </head>
       <body>
         {children}
+        <Scripts />
         {process.env.NODE_ENV === "development" ? <LiveReload /> : null}
       </body>
     </html>
@@ -86,6 +87,8 @@ export function CatchBoundary() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+
   return (
     <Document title="Uh-oh!">
       <div className="error-container">
