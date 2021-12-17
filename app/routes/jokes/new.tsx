@@ -1,8 +1,16 @@
-import { ActionFunction, Link, LoaderFunction, useCatch } from "remix";
-import { useActionData, redirect, json } from "remix";
+import {
+  ActionFunction,
+  Form,
+  json,
+  Link,
+  LoaderFunction,
+  redirect,
+  useActionData,
+  useCatch,
+} from "remix";
 import { db } from "~/utils/db.server";
-import { JokeActionData } from "~/utils/types";
 import { getUserId, requireUserId } from "~/utils/session.server";
+import { JokeActionData } from "~/utils/types";
 
 function validateJokeContent(content: string) {
   if (content.length < 10) {
@@ -62,7 +70,7 @@ const NewJokeRoute = () => {
   return (
     <div>
       <p>Add your own hilarious joke</p>
-      <form method="post">
+      <Form method="post">
         <div>
           <label>
             Name:{" "}
@@ -111,7 +119,7 @@ const NewJokeRoute = () => {
             Add
           </button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 };

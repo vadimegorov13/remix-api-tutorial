@@ -1,15 +1,15 @@
 import {
+  Form,
   Link,
   LinksFunction,
   LoaderFunction,
   Outlet,
   useLoaderData,
-  useParams,
 } from "remix";
 import { db } from "~/utils/db.server";
+import { getUser } from "~/utils/session.server";
 import { JokesData } from "~/utils/types";
 import stylesUrl from "../styles/jokes.css";
-import { getUser } from "~/utils/session.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -51,11 +51,11 @@ const Jokes = () => {
           {data.user ? (
             <div className="user-info">
               <span>{`Hi ${data.user.username}`}</span>
-              <form action="/logout" method="post">
+              <Form action="/logout" method="post">
                 <button type="submit" className="button">
                   Logout
                 </button>
-              </form>
+              </Form>
             </div>
           ) : (
             <Link to="/login">Login</Link>
