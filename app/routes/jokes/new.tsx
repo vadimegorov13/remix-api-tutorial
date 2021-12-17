@@ -1,7 +1,8 @@
 import type { ActionFunction } from "remix";
 import { useActionData, redirect, json } from "remix";
 import { db } from "~/utils/db.server";
-import { ActionData } from "~/utils/types";
+import { JokeActionData } from "~/utils/types";
+import { requireUserId } from "~/utils/session.server";
 
 function validateJokeContent(content: string) {
   if (content.length < 10) {
@@ -15,9 +16,10 @@ function validateJokeName(name: string) {
   }
 }
 
-const badRequest = (data: ActionData) => json(data, { status: 400 });
+const badRequest = (data: JokeActionData) => json(data, { status: 400 });
 
 export const action: ActionFunction = async ({ request }) => {
+  const userId = await requireUserId(request);
   const form = await request.formData();
   const name = form.get("name");
   const content = form.get("content");
@@ -40,12 +42,14 @@ export const action: ActionFunction = async ({ request }) => {
     return badRequest({ fieldErrors, fields });
   }
 
-  const joke = await db.joke.create({ data: fields });
+  const joke = await db.joke.create({
+    data: { ...fields, jokesterId: userId },
+  });
   return redirect(`/jokes/${joke.id}`);
 };
 
 const NewJokeRoute = () => {
-  const actionData = useActionData<ActionData>();
+  const actionData = useActionData<JokeActionData>();
 
   return (
     <div>
@@ -105,3 +109,11 @@ const NewJokeRoute = () => {
 };
 
 export default NewJokeRoute;
+
+export function ErrorBoundary() {
+  return (
+    <div className="error-container">
+      Something unexpected went wrong. Sorry about that.
+    </div>
+  );
+}
