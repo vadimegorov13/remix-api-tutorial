@@ -1,4 +1,9 @@
-import { User } from "@prisma/client";
+import { Joke, User } from "@prisma/client";
+
+export type JokeData = {
+  joke: Joke;
+  isOwner: boolean;
+};
 
 export type JokeLink = {
   id: string;
