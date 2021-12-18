@@ -7,7 +7,9 @@ import {
   redirect,
   useActionData,
   useCatch,
+  useTransition,
 } from "remix";
+import { JokeDisplay } from "~/components/joke";
 import { db } from "~/utils/db.server";
 import { getUserId, requireUserId } from "~/utils/session.server";
 import { JokeActionData } from "~/utils/types";
@@ -66,6 +68,26 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 const NewJokeRoute = () => {
   const actionData = useActionData<JokeActionData>();
+  const transition = useTransition();
+
+  if (transition.submission) {
+    const name = transition.submission.formData.get("name");
+    const content = transition.submission.formData.get("content");
+    if (
+      typeof name === "string" &&
+      typeof content === "string" &&
+      !validateJokeContent(content) &&
+      !validateJokeName(name)
+    ) {
+      return (
+        <JokeDisplay
+          joke={{ name, content }}
+          isOwner={true}
+          canDelete={false}
+        />
+      );
+    }
+  }
 
   return (
     <div>
